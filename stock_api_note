@@ -1,0 +1,111 @@
+GET api lay cac ma chung khoan: https://iboard-query.ssi.com.vn/stock/group/VNHEAL (group symbol)
+response: 
+{
+    "code": "SUCCESS",
+    "message": "Call API /stock/group/VN30 successful",
+    "data": [
+        {
+            "avgPrice": 22741.11,
+            "best1Bid": 22700,
+            "best1BidVol": 162700,
+            "best1Offer": 22750,
+            "best1OfferVol": 197200,
+            "best2Bid": 22650,
+            "best2BidVol": 108600,
+            "best2Offer": 22800,
+            "best2OfferVol": 676100,
+            "best3Bid": 22600,
+            "best3BidVol": 140700,
+            "best3Offer": 22850,
+            "best3OfferVol": 283400,
+            "caStatus": "",
+            "ceiling": 24000,
+            "corporateEvents": [],
+            "coveredWarrantType": " ",
+            "exchange": "hose",
+            "exercisePrice": 0,
+            "exerciseRatio": "",
+            "floor": 20900,
+            "highest": 22900,
+            "issuerName": "",
+            "lastTradingDate": "",
+            "lastVol": 63460,
+            "lowest": 22450,
+            "matchedPrice": 22700,
+            "maturityDate": "",
+            "nmTotalTradedValue": 144315065000,
+            "openPrice": 22450,
+            "priorClosePrice": 22450,
+            "refPrice": 22450,
+            "securityName": "NGAN HANG TMCP A CHAU",
+            "stockSymbol": "ACB",
+            "stockType": "s",
+            "totalShare": 63460,
+            "tradingStatus": "",
+            "tradingUnit": 100,
+            "underlyingSymbol": "",
+            "companyNameEn": "Asia Commercial Joint Stock Bank",
+            "companyNameVi": "Ngân hàng Thương mại Cổ phần Á Châu",
+            "oddSession": "Break",
+            "session": "Break",
+            "buyForeignQtty": 0,
+            "remainForeignQtty": 0,
+            "sellForeignQtty": 0,
+            "matchedVolume": 170,
+            "priceChange": 250,
+            "priceChangePercent": 1.11,
+            "lastMatchedPrice": 22700,
+            "lastMatchedVolume": 170,
+            "lastPriceChange": 250,
+            "lastPriceChangePercent": 1.11,
+            "nmTotalTradedQty": 6346000
+        },
+        ...
+    ]
+}
+
+
+
+POST api lấy danh sách các sàn: https://iboard-query.ssi.com.vn/exchange-index/multiple
+request: {"indexIds": ["VNINDEX", "VN30", "HNX30", "VNXALL", "HNXIndex", "HNXUpcomIndex"]}
+response: 
+{
+    "code": "SUCCESS",
+    "message": "Call API /exchange-index/multiple successful",
+    "data": [
+        {
+            "exchange": "hose",
+            "indexId": "VNINDEX",
+            "indexValue": 1111.12,
+            "prevIndexValue": 1100.07,
+            "time": 1699961525046,
+            "latestValue": [],
+            "change": 11.05,
+            "changePercent": 1,
+            "chartOpen": 1109.08,
+            "advances": 380,
+            "allQty": 426270014,
+            "allValue": 8846705000000,
+            "ceiling": 6,
+            "chartHigh": 1115.6,
+            "chartLow": 1106.6,
+            "declines": 110,
+            "floor": 1,
+            "nochanges": 83,
+            "timeMaker": 1699936326172,
+            "totalQtty": 426270014,
+            "totalValue": 8846705000000,
+            "label": "VNINDEX",
+            "exchangeLabel": "HOSE"
+        },
+        ...
+    ]
+}
+
+GET WS lấy data realtime của bảng điểm: wss://iboard-pushstream.ssi.com.vn/realtime
+response là 1 dòng của bảng điểm:
+I#HNX30||||16|6|8|0|0|||||||||||||||
+I#HNXUpcomIndex||||170|86|87|11|5|||||||||||||||
+
+
+
