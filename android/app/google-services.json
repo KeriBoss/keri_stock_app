@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "277467892045",
+    "project_id": "keri-stock",
+    "storage_bucket": "keri-stock.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:277467892045:android:d2289388ec5ab4ac818f04",
+        "android_client_info": {
+          "package_name": "com.example.stock_market_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSpq6W6HY_ns4OTtLfITkLbrfzleSeL6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

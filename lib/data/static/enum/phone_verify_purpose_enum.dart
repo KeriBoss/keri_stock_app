@@ -1,0 +1,4 @@
+enum PhoneVerifyPurposeEnum {
+  register,
+  changePassword,
+}

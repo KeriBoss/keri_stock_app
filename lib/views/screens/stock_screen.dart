@@ -97,7 +97,7 @@ class _StockScreenState extends State<StockScreen> {
       cells: [
         DataCell(
           Text(
-            stock.stockSymbol,
+            stock.stockSymbol ?? ' ',
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,
@@ -105,7 +105,7 @@ class _StockScreenState extends State<StockScreen> {
         ),
         DataCell(
           Text(
-            stock.ceiling.format,
+            stock.ceiling!.format,
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,
@@ -113,7 +113,7 @@ class _StockScreenState extends State<StockScreen> {
         ),
         DataCell(
           Text(
-            stock.floor.format,
+            stock.floor!.format,
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,
@@ -121,7 +121,7 @@ class _StockScreenState extends State<StockScreen> {
         ),
         DataCell(
           Text(
-            stock.refPrice.format,
+            stock.refPrice!.format,
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,
@@ -129,7 +129,7 @@ class _StockScreenState extends State<StockScreen> {
         ),
         DataCell(
           Text(
-            stock.best3Bid.format,
+            stock.best3Bid!.format,
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,
@@ -137,7 +137,7 @@ class _StockScreenState extends State<StockScreen> {
         ),
         DataCell(
           Text(
-            stock.best2Bid.format,
+            stock.best2Bid!.format,
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,
@@ -145,7 +145,7 @@ class _StockScreenState extends State<StockScreen> {
         ),
         DataCell(
           Text(
-            stock.best1Bid.format,
+            stock.best1Bid!.format,
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,
@@ -153,7 +153,7 @@ class _StockScreenState extends State<StockScreen> {
         ),
         DataCell(
           Text(
-            stock.best3Offer.format,
+            stock.best3Offer!.format,
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,
@@ -161,7 +161,7 @@ class _StockScreenState extends State<StockScreen> {
         ),
         DataCell(
           Text(
-            stock.best2Offer.format,
+            stock.best2Offer!.format,
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,
@@ -169,7 +169,7 @@ class _StockScreenState extends State<StockScreen> {
         ),
         DataCell(
           Text(
-            stock.best1Offer.format,
+            stock.best1Offer!.format,
             softWrap: true,
             textAlign: TextAlign.center,
             maxLines: 5,

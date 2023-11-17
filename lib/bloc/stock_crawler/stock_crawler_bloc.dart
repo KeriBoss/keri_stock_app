@@ -2,7 +2,8 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:stock_market_project/data/entities/stock.dart';
-import 'package:stock_market_project/repositories/stock_crawler_repository.dart';
+
+import '../../data/repositories/stock_crawler_repository.dart';
 
 part 'stock_crawler_event.dart';
 part 'stock_crawler_state.dart';
