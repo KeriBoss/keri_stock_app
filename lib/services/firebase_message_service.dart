@@ -106,7 +106,11 @@ class FirebaseMessageService {
               androidChannel.name,
               channelDescription: androidChannel.description,
               icon: '@drawable/ic_launcher',
+
+              /// test
               styleInformation: bigPictureStyleInformation,
+
+              ///
             ),
           ),
           payload: jsonEncode(message.toMap()),
