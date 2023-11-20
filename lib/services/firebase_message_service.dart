@@ -39,13 +39,13 @@ class FirebaseMessageService {
     // subscribe to a topic to get messages from that topic
     firebaseMessaging.subscribeToTopic('all');
 
-    initPushNotifications();
+    initPushFirebaseMessageNotifications();
     initLocalNotifications();
 
     debugPrint('Finish notification initiation');
   }
 
-  Future initPushNotifications() async {
+  Future initPushFirebaseMessageNotifications() async {
     // user for IOS, config foreground message options
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
@@ -72,8 +72,28 @@ class FirebaseMessageService {
     FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
 
     // event handler when application gets a message on foreground
-    FirebaseMessaging.onMessage.listen((message) {
+    FirebaseMessaging.onMessage.listen((message) async {
       final notification = message.notification;
+
+      /// test
+      Map<String, dynamic> msgMap = message.data;
+      Map<String, dynamic>? msgMapData = msgMap['data'];
+      String imgUrl = msgMapData?['icon'];
+
+      print('@@@');
+      print(imgUrl);
+
+      final response = await dio.get(imgUrl);
+      BigPictureStyleInformation bigPictureStyleInformation =
+          BigPictureStyleInformation(
+        ByteArrayAndroidBitmap.fromBase64String(response.data),
+        largeIcon: ByteArrayAndroidBitmap.fromBase64String(response.data),
+      );
+
+      print('@@@');
+      print(bigPictureStyleInformation.bigPicture.data);
+
+      ///
 
       if (notification != null) {
         localNotification.show(
@@ -86,6 +106,7 @@ class FirebaseMessageService {
               androidChannel.name,
               channelDescription: androidChannel.description,
               icon: '@drawable/ic_launcher',
+              styleInformation: bigPictureStyleInformation,
             ),
           ),
           payload: jsonEncode(message.toMap()),
@@ -114,44 +135,9 @@ class FirebaseMessageService {
         debugPrint('Data: ${message.data}');
         debugPrint('Payload: ${jsonDecode(notiResponse.payload!)}');
 
-        // if (context.read<AuthorBloc>().currentUser != null) {
-        //   if (jsonMap['notification']['title'] == 'Notice !!') {
-        //     debugPrint('Public message');
-        //     context.read<GoogleMapBloc>()
-        //       ..add(OnClearLocationEvent(true))
-        //       ..add(OnClearLocationEvent(false))
-        //       ..add(
-        //         OnLoadLocationFromPublicMessageEvent(
-        //           jsonMap['data']['startDes'] as String,
-        //           jsonMap['data']['endDes'] as String,
-        //           LatLng(
-        //             double.parse(jsonMap['data']['startLat']),
-        //             double.parse(jsonMap['data']['startLng']),
-        //           ),
-        //           LatLng(
-        //             double.parse(jsonMap['data']['endLat']),
-        //             double.parse(jsonMap['data']['endLng']),
-        //           ),
-        //           jsonMap['data']['fromPhoneToken'] as String,
-        //         ),
-        //       );
-        //   } else {
-        //     debugPrint('Private message');
-        //     context.read<GoogleMapBloc>()
-        //       ..add(OnClearLocationEvent(true))
-        //       ..add(OnClearLocationEvent(false))
-        //       ..add(OnLoadLocationFromPrivateMessageEvent(
-        //         jsonMap['data']['senderDes'],
-        //         LatLng(
-        //           double.parse(jsonMap['data']['senderLat']),
-        //           double.parse(jsonMap['data']['senderLng']),
-        //         ),
-        //       ));
-        //   }
-        // } else {
-        //   UiRender.showConfirmDialog(context, '', 'Please login first!');
-        //   context.router.replaceAll([const LoginRoute()]);
-        // }
+        Map<String, dynamic> dataMap = message.data;
+
+        print(dataMap['link1']);
       },
     );
 

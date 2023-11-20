@@ -21,15 +21,17 @@ class _InputAppIdScreenState extends State<InputAppIdScreen> {
   final _formKey = GlobalKey<FormState>();
   String? currentCode = "";
 
+  Future<void> _getAppIdFromLocal() async {
+    currentCode = await LocalStorageService.getLocalStorageData(
+      LocalStorageEnum.appId.name,
+    );
+  }
+
   @override
   void initState() {
     FirebaseMessageService(context).initNotifications();
     //Load code form storage
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      currentCode = await LocalStorageService.getLocalStorageData(
-        LocalStorageEnum.appId.name,
-      ) as String;
-    });
+    _getAppIdFromLocal();
 
     super.initState();
   }

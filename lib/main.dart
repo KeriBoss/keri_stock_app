@@ -36,6 +36,23 @@ const androidChannel = AndroidNotificationChannel(
   importance: Importance.max,
 );
 
+final dumpMessageMap = {
+  "to": "DEVICE_TOKEN",
+  "notification": {
+    "title": "Title of Notification",
+    "body": "Body of Notification",
+    "click_action":
+        "FLUTTER_NOTIFICATION_CLICK" // Optional: Specify the action when the user taps on the notification
+  },
+  "data": {
+    "link1": "/index.php?option=com_user&dsjlfkjsdflk=10",
+    "image":
+        "https://icdn.dantri.com.vn/thumb_w/660/2021/06/09/chodocx-1623207689539.jpeg",
+    "icon":
+        "https://www.baokontum.com.vn/uploads/Image/2023/01/09/103359ta-con-meo.jpg",
+  }
+};
+
 final localNotification = FlutterLocalNotificationsPlugin();
 
 @pragma('vm:entry-point')
