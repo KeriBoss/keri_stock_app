@@ -15,10 +15,26 @@ abstract class _$AppRouter extends RootStackRouter {
 
   @override
   final Map<String, PageFactory> pagesMap = {
+    ChangePasswordRoute.name: (routeData) {
+      final args = routeData.argsAs<ChangePasswordRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: ChangePasswordScreen(
+          key: args.key,
+          user: args.user,
+        ),
+      );
+    },
     ClientIndexRoute.name: (routeData) {
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: const ClientIndexScreen(),
+      );
+    },
+    InputAppIdRoute.name: (routeData) {
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: const InputAppIdScreen(),
       );
     },
     LoginRoute.name: (routeData) {
@@ -54,7 +70,55 @@ abstract class _$AppRouter extends RootStackRouter {
         child: const StockScreen(),
       );
     },
+    WebViewRoute.name: (routeData) {
+      final args = routeData.argsAs<WebViewRouteArgs>();
+      return AutoRoutePage<dynamic>(
+        routeData: routeData,
+        child: WebViewScreen(
+          key: args.key,
+          code: args.code,
+        ),
+      );
+    },
   };
+}
+
+/// generated route for
+/// [ChangePasswordScreen]
+class ChangePasswordRoute extends PageRouteInfo<ChangePasswordRouteArgs> {
+  ChangePasswordRoute({
+    Key? key,
+    required User user,
+    List<PageRouteInfo>? children,
+  }) : super(
+          ChangePasswordRoute.name,
+          args: ChangePasswordRouteArgs(
+            key: key,
+            user: user,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'ChangePasswordRoute';
+
+  static const PageInfo<ChangePasswordRouteArgs> page =
+      PageInfo<ChangePasswordRouteArgs>(name);
+}
+
+class ChangePasswordRouteArgs {
+  const ChangePasswordRouteArgs({
+    this.key,
+    required this.user,
+  });
+
+  final Key? key;
+
+  final User user;
+
+  @override
+  String toString() {
+    return 'ChangePasswordRouteArgs{key: $key, user: $user}';
+  }
 }
 
 /// generated route for
@@ -67,6 +131,20 @@ class ClientIndexRoute extends PageRouteInfo<void> {
         );
 
   static const String name = 'ClientIndexRoute';
+
+  static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [InputAppIdScreen]
+class InputAppIdRoute extends PageRouteInfo<void> {
+  const InputAppIdRoute({List<PageRouteInfo>? children})
+      : super(
+          InputAppIdRoute.name,
+          initialChildren: children,
+        );
+
+  static const String name = 'InputAppIdRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
 }
@@ -178,4 +256,42 @@ class StockRoute extends PageRouteInfo<void> {
   static const String name = 'StockRoute';
 
   static const PageInfo<void> page = PageInfo<void>(name);
+}
+
+/// generated route for
+/// [WebViewScreen]
+class WebViewRoute extends PageRouteInfo<WebViewRouteArgs> {
+  WebViewRoute({
+    Key? key,
+    required String code,
+    List<PageRouteInfo>? children,
+  }) : super(
+          WebViewRoute.name,
+          args: WebViewRouteArgs(
+            key: key,
+            code: code,
+          ),
+          initialChildren: children,
+        );
+
+  static const String name = 'WebViewRoute';
+
+  static const PageInfo<WebViewRouteArgs> page =
+      PageInfo<WebViewRouteArgs>(name);
+}
+
+class WebViewRouteArgs {
+  const WebViewRouteArgs({
+    this.key,
+    required this.code,
+  });
+
+  final Key? key;
+
+  final String code;
+
+  @override
+  String toString() {
+    return 'WebViewRouteArgs{key: $key, code: $code}';
+  }
 }

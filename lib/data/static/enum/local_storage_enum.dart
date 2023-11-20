@@ -3,4 +3,5 @@ enum LocalStorageEnum {
   phoneNumber,
   password,
   rememberLogin,
+  appId;
 }

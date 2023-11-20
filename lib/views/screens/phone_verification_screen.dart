@@ -61,8 +61,6 @@ class _PhoneVerificationState extends State<PhoneVerificationScreen> {
             BlocProvider.of<AuthorizationBloc>(context).add(
               OnRegisterEvent(widget.user),
             );
-
-            context.router.pushNamed(AppRouterPath.login);
           });
         } else if (widget.purpose == PhoneVerifyPurposeEnum.changePassword) {
           // context.router.pushWidget(ChangePasswordScreen(user: widget.user));
@@ -105,62 +103,69 @@ class _PhoneVerificationState extends State<PhoneVerificationScreen> {
         height: MediaQuery.of(context).size.height,
         child: Form(
           key: _formKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                'Xác thực số điện thoại',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 25.size,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-              ),
-              20.verticalSpace,
-              Container(
-                padding: const EdgeInsets.all(10),
-                margin: EdgeInsets.symmetric(vertical: 15.height),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10.radius),
-                  border: Border.all(
-                    color: Colors.grey,
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: _verificationCodeController,
-                        keyboardType: TextInputType.number,
-                        decoration: const InputDecoration(
-                          hintText: 'Nhập mã OTP từ tin nhăn điện thoại...',
-                          border: InputBorder.none,
-                        ),
-                        validator: _textFieldValidator,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              GradientElevatedButton(
-                text: 'Xác thực',
-                buttonHeight: 50.height,
-                onPress: _onPressVerifyButton,
-              ),
-              TextButton(
-                onPressed: _onPressResendButton,
-                child: const Text(
-                  'Chưa nhận mã?',
+          child: BlocListener<AuthorizationBloc, AuthorizationState>(
+            listener: (context, state) {
+              if (state is AuthorizationRegisteredState) {
+                context.router.pushNamed(AppRouterPath.inputAppId);
+              }
+            },
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Xác thực số điện thoại',
                   style: TextStyle(
-                    color: Colors.grey,
-                    fontStyle: FontStyle.italic,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 25.size,
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
-              ),
-            ],
+                20.verticalSpace,
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: EdgeInsets.symmetric(vertical: 15.height),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10.radius),
+                    border: Border.all(
+                      color: Colors.grey,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: TextFormField(
+                          controller: _verificationCodeController,
+                          keyboardType: TextInputType.number,
+                          decoration: const InputDecoration(
+                            hintText: 'Nhập mã OTP từ tin nhăn điện thoại...',
+                            border: InputBorder.none,
+                          ),
+                          validator: _textFieldValidator,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                GradientElevatedButton(
+                  text: 'Xác thực',
+                  buttonHeight: 50.height,
+                  onPress: _onPressVerifyButton,
+                ),
+                TextButton(
+                  onPressed: _onPressResendButton,
+                  child: const Text(
+                    'Chưa nhận mã?',
+                    style: TextStyle(
+                      color: Colors.grey,
+                      fontStyle: FontStyle.italic,
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

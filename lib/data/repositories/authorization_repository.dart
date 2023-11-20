@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:either_dart/either.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:stock_market_project/core/success/success.dart';
@@ -19,30 +21,24 @@ class AuthorizationRepository {
     try {
       User? user;
 
-      await FirebaseDatabaseService.getObjectMap(
-        collection: FireStoreCollectionEnum.users.name,
-        document: phoneNumber,
-      ).then((responseMap) async {
-        if (responseMap != null) {
-          if (responseMap['password'] != password) {
-            return const Left(ApiFailure('Sai mật khẩu'));
-          }
+      final response = await NetworkService.get(
+        queryParam: {
+          'tablename': DatabaseTableEnum.tbl_users.name,
+          'fieldname': 'phonenumber',
+          'fieldvalue': phoneNumber,
+          'fieldname': 'password',
+          'password': password,
+        },
+        url: '/list/',
+      );
 
-          String fcmToken = await LocalStorageService.getLocalStorageData(
-            LocalStorageEnum.phoneToken.name,
-          ) as String;
-
-          await FirebaseDatabaseService.updateData(
-            data: {
-              'phoneFcmToken': fcmToken,
-            },
-            collection: FireStoreCollectionEnum.users.name,
-            document: phoneNumber,
-          );
-
-          user = User.fromJson(responseMap);
-        }
-      });
+      response.fold(
+        (failure) => null,
+        (success) {
+          Map<String, dynamic> resMap = jsonDecode(success.toString());
+          user = User.fromJson(resMap);
+        },
+      );
 
       if (user != null) {
         String? rememberPass = await LocalStorageService.getLocalStorageData(
@@ -76,49 +72,65 @@ class AuthorizationRepository {
     bool isSuccess = false;
 
     try {
-      // final responseMap = await FirebaseDatabaseService.getObjectMap(
-      //   collection: FireStoreCollectionEnum.users.name,
-      //   document: newUser.phoneNumber,
+      Map<String, dynamic> requestParam = {
+        'tablename': DatabaseTableEnum.tbl_users.name,
+        DatabaseActionEnum.submitnew.name: DatabaseActionEnum.submitnew.name,
+      }..addAll(newUser.toJson());
+
+      String fcmToken = await LocalStorageService.getLocalStorageData(
+        LocalStorageEnum.phoneToken.name,
+      ) as String;
+
+      requestParam['phoneFcmToken'] = fcmToken;
+
+      final res = await NetworkService.post(
+        paramBody: requestParam,
+        url: '/krud/',
+      );
+
+      res.fold(
+        (failure) => isSuccess = false,
+        (success) => isSuccess = true,
+      );
+
+      // final response = await NetworkService.get(
+      //   queryParam: {
+      //     'tablename': DatabaseTableEnum.tbl_users.name,
+      //     'fieldname': 'phonenumber',
+      //     'fieldvalue': newUser.phoneNumber,
+      //   },
+      //   url: '/list/',
       // );
-
-      final response = await NetworkService.get(
-        queryParam: {
-          'tablename': DatabaseTableEnum.tbl_users.name,
-          'fieldname': 'phonenumber',
-          'fieldvalue': newUser.phoneNumber,
-        },
-        url: '/list/',
-      );
-
-      response.fold(
-        (failure) async {
-          Map<String, dynamic> requestParam = {
-            'tablename': DatabaseTableEnum.tbl_users.name,
-            DatabaseActionEnum.submitnew.name:
-                DatabaseActionEnum.submitnew.name,
-          }..addAll(newUser.toJson());
-
-          String fcmToken = await LocalStorageService.getLocalStorageData(
-            LocalStorageEnum.phoneToken.name,
-          ) as String;
-
-          requestParam['phoneFcmToken'] = fcmToken;
-
-          final res = await NetworkService.post(
-            paramBody: requestParam,
-            url: '/krud/',
-          );
-
-          res.fold(
-            (failure) => isSuccess = false,
-            (success) => isSuccess = true,
-          );
-        },
-        (success) {
-          isSuccess = false;
-        },
-      );
-
+      //
+      // response.fold(
+      //   (failure) async {
+      //     Map<String, dynamic> requestParam = {
+      //       'tablename': DatabaseTableEnum.tbl_users.name,
+      //       DatabaseActionEnum.submitnew.name:
+      //           DatabaseActionEnum.submitnew.name,
+      //     }..addAll(newUser.toJson());
+      //
+      //     String fcmToken = await LocalStorageService.getLocalStorageData(
+      //       LocalStorageEnum.phoneToken.name,
+      //     ) as String;
+      //
+      //     requestParam['phoneFcmToken'] = fcmToken;
+      //
+      //     final res = await NetworkService.post(
+      //       paramBody: requestParam,
+      //       url: '/krud/',
+      //     );
+      //
+      //     res.fold(
+      //       (failure) => isSuccess = false,
+      //       (success) => isSuccess = true,
+      //     );
+      //   },
+      //   (success) {
+      //     isSuccess = false;
+      //   },
+      // );
+      //
       return isSuccess
           ? const Right(ApiSuccessMessage('Đăng ký tài khoản mới thành công'))
           : const Left(ApiFailure('Tài khoản này đã tồn tại'));

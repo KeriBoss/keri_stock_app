@@ -5,4 +5,6 @@ class AppRouterPath {
   static String changePassword = '/changePassword';
   static String clientIndex = '/clientIndex';
   static String stock = '/stock';
+  static String webview = '/webview';
+  static String inputAppId = '/inputAppId';
 }

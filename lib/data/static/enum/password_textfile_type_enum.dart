@@ -1,0 +1,4 @@
+enum PasswordTextFieldType {
+  password,
+  confirmPassword,
+}

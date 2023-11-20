@@ -40,7 +40,7 @@ class NetworkService {
   }
 
   static Future<Either<Failure, dynamic>> get({
-    required Map<String, dynamic> queryParam,
+    Map<String, dynamic>? queryParam,
     required String url,
   }) async {
     try {
