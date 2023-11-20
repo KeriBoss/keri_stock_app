@@ -15,7 +15,7 @@ class User {
   String idCertificateNumber;
   String password;
   String? status;
-  String role;
+  String userRole;
   String? phoneFcmToken;
 
   User({
@@ -27,7 +27,7 @@ class User {
     required this.idCertificateNumber,
     required this.password,
     this.status,
-    required this.role,
+    required this.userRole,
     this.phoneFcmToken,
   });
 
@@ -36,11 +36,11 @@ class User {
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   String getRole() {
-    return role == RoleEnum.admin.name
+    return userRole == RoleEnum.admin.name
         ? 'Quản trị viên'
-        : role == RoleEnum.client.name
+        : userRole == RoleEnum.client.name
             ? 'Khách hàng'
-            : role == RoleEnum.loaner.name
+            : userRole == RoleEnum.loaner.name
                 ? 'Bên cho vay'
                 : 'Không xác định';
   }
@@ -55,6 +55,6 @@ class User {
 
   @override
   String toString() {
-    return 'User{phoneNumber: $phoneNumber, email: $email, fullName: $fullName, sex: $sex, address: $address, idCertificateNumber: $idCertificateNumber, password: $password, status: $status, role: $role, phoneFcmToken: $phoneFcmToken}';
+    return 'User{phoneNumber: $phoneNumber, email: $email, fullName: $fullName, sex: $sex, address: $address, idCertificateNumber: $idCertificateNumber, password: $password, status: $status, userRole: $userRole, phoneFcmToken: $phoneFcmToken}';
   }
 }

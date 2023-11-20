@@ -1,13 +1,14 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:dropdown_textfield/dropdown_textfield.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:stock_market_project/bloc/authorization/authorization_bloc.dart';
 import 'package:stock_market_project/core/extension/number_extension.dart';
-import 'package:stock_market_project/data/static/enum/phone_verify_purpose_enum.dart';
-import 'package:stock_market_project/views/screens/phone_verification_screen.dart';
+import 'package:stock_market_project/data/static/enum/local_storage_enum.dart';
+import 'package:stock_market_project/services/local_storage_service.dart';
 
 import '../../data/entities/user.dart';
-import '../../services/firebase_sms_service.dart';
 import '../../utils/ui_render.dart';
 import '../widgets/gradient_button.dart';
 
@@ -112,27 +113,34 @@ class _RegisterScreenState extends State<RegisterScreen> {
     }
 
     if (_formKey.currentState!.validate()) {
-      FirebaseSmsService.verifyPhoneNumber(
-        _phoneNumberTextEditingController.text,
-      );
+      // FirebaseSmsService.verifyPhoneNumber(
+      //   _phoneNumberTextEditingController.text,
+      // );
+      //
+      // context.router.pushWidget(
+      //   PhoneVerificationScreen(
+      //     user: newUser,
+      //     purpose: PhoneVerifyPurposeEnum.register,
+      //   ),
+      // );
+
+      String fcmToken = await LocalStorageService.getLocalStorageData(
+          LocalStorageEnum.phoneToken.name) as String;
 
       User newUser = User(
         fullName: _fullNameTextEditingController.text,
         password: _passwordTextEditingController.text,
         phoneNumber: _phoneNumberTextEditingController.text,
-        phoneFcmToken: '',
-        role: widget.isShipper ? 'shipper' : 'client',
+        phoneFcmToken: fcmToken,
+        userRole: widget.isShipper ? 'shipper' : 'client',
         address: _addressTextEditingController.text,
         idCertificateNumber: _idCertNumTextEditingController.text,
         sex: _sexDropdownController.dropDownValue?.value,
       );
 
-      context.router.pushWidget(
-        PhoneVerificationScreen(
-          user: newUser,
-          purpose: PhoneVerifyPurposeEnum.register,
-        ),
-      );
+      context.read<AuthorizationBloc>().add(
+            OnRegisterEvent(newUser),
+          );
     }
   }
 

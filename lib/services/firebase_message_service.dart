@@ -31,7 +31,10 @@ class FirebaseMessageService {
     debugPrint('FCM token: $fcmToken');
 
     // cache phone fcm token
-    LocalStorageService.setLocalStorageData('phoneToken', fcmToken);
+    LocalStorageService.setLocalStorageData(
+      LocalStorageEnum.phoneToken.name,
+      fcmToken,
+    );
 
     // subscribe to a topic to get messages from that topic
     firebaseMessaging.subscribeToTopic('all');

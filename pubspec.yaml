@@ -54,6 +54,8 @@ dependencies:
   shared_preferences: ^2.2.2
   dropdown_textfield: ^1.0.8
   flutter_launcher_icons: ^0.13.1
+  curl_logger_dio_interceptor: ^1.0.0
+  webview_flutter: ^4.4.2
 
 dev_dependencies:
   build_runner: ^2.4.6

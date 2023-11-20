@@ -7,27 +7,27 @@ part of 'user.dart';
 // **************************************************************************
 
 User _$UserFromJson(Map<String, dynamic> json) => User(
-      phoneNumber: json['phoneNumber'] as String,
+      phoneNumber: json['phonenumber'] as String,
       email: json['email'] as String?,
-      fullName: json['fullName'] as String,
+      fullName: json['fullname'] as String,
       sex: json['sex'] as String,
       address: json['address'] as String?,
-      idCertificateNumber: json['idCertificateNumber'] as String,
+      idCertificateNumber: json['idcertificatenumber'] as String,
       password: json['password'] as String,
       status: json['status'] as String?,
-      role: json['role'] as String,
-      phoneFcmToken: json['phoneFcmToken'] as String?,
+      userRole: json['userrole'] as String,
+      phoneFcmToken: json['phonefcmtoken'] as String?,
     );
 
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
-      'phoneNumber': instance.phoneNumber,
+      'phonenumber': instance.phoneNumber,
       'email': instance.email,
-      'fullName': instance.fullName,
+      'fullname': instance.fullName,
       'sex': instance.sex,
       'address': instance.address,
-      'idCertificateNumber': instance.idCertificateNumber,
+      'idcertificatenumber': instance.idCertificateNumber,
       'password': instance.password,
       'status': instance.status,
-      'role': instance.role,
-      'phoneFcmToken': instance.phoneFcmToken,
+      'userrole': instance.userRole,
+      'phonefcmtoken': instance.phoneFcmToken,
     };

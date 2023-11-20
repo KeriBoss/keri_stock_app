@@ -14,6 +14,7 @@ import 'package:stock_market_project/core/router/app_router_config.dart';
 import 'package:stock_market_project/data/repositories/authorization_repository.dart';
 
 import 'bloc/stock_crawler/stock_crawler_bloc.dart';
+import 'core/config/dio_config.dart';
 import 'core/config/http_client_config.dart';
 import 'core/theme/app_theme.dart';
 import 'data/repositories/stock_crawler_repository.dart';
@@ -46,6 +47,9 @@ Future<void> handleBackgroundMessage(RemoteMessage? message) async {
 
 Future<void> main() async {
   HttpOverrides.global = HttpClientConfig();
+
+  DioConfig.configBasicOptions(dio);
+  DioConfig.configInterceptors(dio);
 
   WidgetsFlutterBinding.ensureInitialized();
 

@@ -1,6 +1,8 @@
 import 'package:either_dart/either.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:stock_market_project/core/success/success.dart';
+import 'package:stock_market_project/data/static/enum/database_table_enum.dart';
+import 'package:stock_market_project/services/network_service.dart';
 
 import '../../core/failure/failure.dart';
 import '../../services/firebase_database_service.dart';
@@ -65,42 +67,66 @@ class AuthorizationRepository {
       debugPrint(
         'Caught login error: ${e.toString()} \n${stackTrace.toString()}',
       );
+
       return Left(ExceptionFailure(e.toString()));
     }
   }
 
   Future<Either<Failure, Success>> register(User newUser) async {
+    bool isSuccess = false;
+
     try {
-      final responseMap = await FirebaseDatabaseService.getObjectMap(
-        collection: FireStoreCollectionEnum.users.name,
-        document: newUser.phoneNumber,
+      // final responseMap = await FirebaseDatabaseService.getObjectMap(
+      //   collection: FireStoreCollectionEnum.users.name,
+      //   document: newUser.phoneNumber,
+      // );
+
+      final response = await NetworkService.get(
+        queryParam: {
+          'tablename': DatabaseTableEnum.tbl_users.name,
+          'fieldname': 'phonenumber',
+          'fieldvalue': newUser.phoneNumber,
+        },
+        url: '/list/',
       );
 
-      if (responseMap == null) {
-        Map<String, dynamic> userMap = newUser.toJson();
+      response.fold(
+        (failure) async {
+          Map<String, dynamic> requestParam = {
+            'tablename': DatabaseTableEnum.tbl_users.name,
+            DatabaseActionEnum.submitnew.name:
+                DatabaseActionEnum.submitnew.name,
+          }..addAll(newUser.toJson());
 
-        String fcmToken = await LocalStorageService.getLocalStorageData(
-          LocalStorageEnum.phoneToken.name,
-        ) as String;
+          String fcmToken = await LocalStorageService.getLocalStorageData(
+            LocalStorageEnum.phoneToken.name,
+          ) as String;
 
-        userMap['phoneFcmToken'] = fcmToken;
+          requestParam['phoneFcmToken'] = fcmToken;
 
-        await FirebaseDatabaseService.addData(
-          data: userMap,
-          collection: FireStoreCollectionEnum.users.name,
-          document: newUser.phoneNumber,
-        );
+          final res = await NetworkService.post(
+            paramBody: requestParam,
+            url: '/krud/',
+          );
 
-        return const Right(
-          ApiSuccessMessage('Đăng ký tài khoản mới thành công'),
-        );
-      } else {
-        return const Left(ApiFailure('Tài khoản này đã tồn tại'));
-      }
+          res.fold(
+            (failure) => isSuccess = false,
+            (success) => isSuccess = true,
+          );
+        },
+        (success) {
+          isSuccess = false;
+        },
+      );
+
+      return isSuccess
+          ? const Right(ApiSuccessMessage('Đăng ký tài khoản mới thành công'))
+          : const Left(ApiFailure('Tài khoản này đã tồn tại'));
     } catch (e, stackTrace) {
       debugPrint(
         'Caught register error: ${e.toString()} \n${stackTrace.toString()}',
       );
+
       return Left(ExceptionFailure(e.toString()));
     }
   }

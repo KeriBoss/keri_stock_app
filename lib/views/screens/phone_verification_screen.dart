@@ -62,11 +62,6 @@ class _PhoneVerificationState extends State<PhoneVerificationScreen> {
               OnRegisterEvent(widget.user),
             );
 
-            UiRender.showSnackBar(
-              context,
-              'Chào mừng bạn, xin hãy đăng nhập để sử dụng ứng dụng',
-            );
-
             context.router.pushNamed(AppRouterPath.login);
           });
         } else if (widget.purpose == PhoneVerifyPurposeEnum.changePassword) {

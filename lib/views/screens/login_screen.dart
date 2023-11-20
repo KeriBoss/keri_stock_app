@@ -169,63 +169,75 @@ class _LoginScreenState extends State<LoginScreen> {
         padding: EdgeInsets.symmetric(horizontal: 20.size),
         child: Form(
           key: _loginFormKey,
-          child: Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              300.verticalSpace,
-              _customTextField(
-                controller: _phoneNumberTextEditingController,
-                hintText: 'Số điện thoại',
-                additionalValidator: _phoneNumberAndPasswordValidator,
-                keyboardType: TextInputType.number,
-              ),
-              _customTextField(
-                controller: _passwordTextEditingController,
-                hintText: 'Mật khẩu',
-                isPassword: true,
-                isObscure: _isPasswordObscure,
-              ),
-              10.verticalSpace,
-              _rememberPasswordCheckBox('Ghi nhớ mật khẩu'),
-              10.verticalSpace,
-              GradientElevatedButton(
-                text: 'Đăng nhập',
-                buttonHeight: 50.height,
-                onPress: _onPressedLoginButton,
-              ),
-              TextButton(
-                onPressed: _onPressForgotPassword,
-                child: const Text(
-                  'Quên mật khẩu?',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontWeight: FontWeight.w400,
+          child: BlocConsumer<AuthorizationBloc, AuthorizationState>(
+            listener: (context, state) {
+              if (state is AuthorizationRegisteredState) {
+                UiRender.showSnackBar(
+                  context,
+                  'Chào mừng bạn, xin hãy đăng nhập để sử dụng ứng dụng',
+                );
+              }
+            },
+            builder: (context, state) {
+              return Column(
+                mainAxisSize: MainAxisSize.max,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  300.verticalSpace,
+                  _customTextField(
+                    controller: _phoneNumberTextEditingController,
+                    hintText: 'Số điện thoại',
+                    additionalValidator: _phoneNumberAndPasswordValidator,
+                    keyboardType: TextInputType.number,
                   ),
-                ),
-              ),
-              // TextButton(
-              //   onPressed: () => _onPressedRegisterButton(true),
-              //   child: const Text(
-              //     'Đăng ký dành cho Shipper',
-              //     style: TextStyle(
-              //       color: Colors.grey,
-              //       fontStyle: FontStyle.italic,
-              //     ),
-              //   ),
-              // ),
-              TextButton(
-                onPressed: () => _onPressedRegisterButton(false),
-                child: const Text(
-                  'Đăng ký dành cho Khách hàng',
-                  style: TextStyle(
-                    color: Colors.grey,
-                    fontStyle: FontStyle.italic,
+                  _customTextField(
+                    controller: _passwordTextEditingController,
+                    hintText: 'Mật khẩu',
+                    isPassword: true,
+                    isObscure: _isPasswordObscure,
                   ),
-                ),
-              ),
-            ],
+                  10.verticalSpace,
+                  _rememberPasswordCheckBox('Ghi nhớ mật khẩu'),
+                  10.verticalSpace,
+                  GradientElevatedButton(
+                    text: 'Đăng nhập',
+                    buttonHeight: 50.height,
+                    onPress: _onPressedLoginButton,
+                  ),
+                  TextButton(
+                    onPressed: _onPressForgotPassword,
+                    child: const Text(
+                      'Quên mật khẩu?',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
+                  ),
+                  // TextButton(
+                  //   onPressed: () => _onPressedRegisterButton(true),
+                  //   child: const Text(
+                  //     'Đăng ký dành cho Shipper',
+                  //     style: TextStyle(
+                  //       color: Colors.grey,
+                  //       fontStyle: FontStyle.italic,
+                  //     ),
+                  //   ),
+                  // ),
+                  TextButton(
+                    onPressed: () => _onPressedRegisterButton(false),
+                    child: const Text(
+                      'Đăng ký dành cho Khách hàng',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontStyle: FontStyle.italic,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
           ),
         ),
       ),
