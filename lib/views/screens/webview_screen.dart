@@ -1,13 +1,16 @@
 import 'package:auto_route/annotations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_webview_pro/webview_flutter.dart';
 
+import '../../bloc/webview/webview_bloc.dart';
 import '../../main.dart';
 import '../../services/firebase_message_service.dart';
 
 @RoutePage()
 class WebViewScreen extends StatefulWidget {
   const WebViewScreen({super.key, required this.code});
+
   final String code;
 
   @override
@@ -50,30 +53,41 @@ class _WebViewScreenState extends State<WebViewScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: WebView(
-        onWebViewCreated: (WebViewController webViewController) {
-          webviewController = webViewController;
-        },
-        initialUrl: "https://keri.vn/",
-        javascriptMode: JavascriptMode.unrestricted,
-        onProgress: (int progress) {
-          debugPrint('WebView is loading (progress : $progress%)');
-        },
-        javascriptChannels: const <JavascriptChannel>{},
-        navigationDelegate: (NavigationRequest request) {
-          return NavigationDecision.navigate;
-        },
-        onPageStarted: (String url) {
-          debugPrint('Page started loading: $url');
-          if (url == "https://keri.vn/" && count < 3) {
-            loadWebViewData();
+      body: BlocListener<WebviewBloc, WebviewState>(
+        listener: (context, state) {
+          if (state is WebviewLoadedState) {
             setState(() {
-              count++;
+              link = state.url;
+              webviewController.loadUrl(link);
+              debugPrint("url: $link");
             });
           }
         },
-        onPageFinished: (String url) {},
-        gestureNavigationEnabled: true,
+        child: WebView(
+          onWebViewCreated: (WebViewController webViewController) {
+            webviewController = webViewController;
+          },
+          initialUrl: "https://keri.vn/",
+          javascriptMode: JavascriptMode.unrestricted,
+          onProgress: (int progress) {
+            debugPrint('WebView is loading (progress : $progress%)');
+          },
+          javascriptChannels: const <JavascriptChannel>{},
+          navigationDelegate: (NavigationRequest request) {
+            return NavigationDecision.navigate;
+          },
+          onPageStarted: (String url) {
+            debugPrint('Page started loading: $url');
+            if (url == "https://keri.vn/" && count < 3) {
+              loadWebViewData();
+              setState(() {
+                count++;
+              });
+            }
+          },
+          onPageFinished: (String url) {},
+          gestureNavigationEnabled: true,
+        ),
       ),
     );
   }

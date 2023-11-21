@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:stock_market_project/bloc/authorization/authorization_bloc.dart';
+import 'package:stock_market_project/bloc/webview/webview_bloc.dart';
 import 'package:stock_market_project/core/router/app_router_config.dart';
 import 'package:stock_market_project/data/repositories/authorization_repository.dart';
 
@@ -90,6 +91,9 @@ Future<void> main() async {
             create: (context) => StockCrawlerBloc(
               RepositoryProvider.of<StockCrawlerRepository>(context),
             ),
+          ),
+          BlocProvider<WebviewBloc>(
+            create: (context) => WebviewBloc(),
           ),
           BlocProvider<AuthorizationBloc>(
             create: (context) => AuthorizationBloc(

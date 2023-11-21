@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:http/http.dart' as http;
+import 'package:stock_market_project/bloc/webview/webview_bloc.dart';
 
 import '../data/static/enum/local_storage_enum.dart';
 import '../main.dart';
@@ -75,25 +78,28 @@ class FirebaseMessageService {
     FirebaseMessaging.onMessage.listen((message) async {
       final notification = message.notification;
 
-      /// test
-      Map<String, dynamic> msgMap = message.data;
-      Map<String, dynamic>? msgMapData = msgMap['data'];
-      String imgUrl = msgMapData?['icon'];
+      // get image from internet, then parse the base64 code the response to the notification for it to show the image
+      Map<String, dynamic> msgMapData = message.data;
 
-      print('@@@');
-      print(imgUrl);
+      String imgUrl = msgMapData['icon'] as String;
+      String iconUrl = msgMapData['image'] as String;
 
-      final response = await dio.get(imgUrl);
+      final http.Response imgResponse = await http.get(Uri.parse(imgUrl));
+      final http.Response iconResponse = await http.get(Uri.parse(iconUrl));
+
       BigPictureStyleInformation bigPictureStyleInformation =
           BigPictureStyleInformation(
-        ByteArrayAndroidBitmap.fromBase64String(response.data),
-        largeIcon: ByteArrayAndroidBitmap.fromBase64String(response.data),
+        ByteArrayAndroidBitmap.fromBase64String(
+          base64Encode(
+            imgResponse.bodyBytes,
+          ),
+        ),
+        largeIcon: ByteArrayAndroidBitmap.fromBase64String(
+          base64Encode(
+            iconResponse.bodyBytes,
+          ),
+        ),
       );
-
-      print('@@@');
-      print(bigPictureStyleInformation.bigPicture.data);
-
-      ///
 
       if (notification != null) {
         localNotification.show(
@@ -106,12 +112,17 @@ class FirebaseMessageService {
               androidChannel.name,
               channelDescription: androidChannel.description,
               icon: '@drawable/ic_launcher',
-
-              /// test
               styleInformation: bigPictureStyleInformation,
-
-              ///
             ),
+            iOS: DarwinNotificationDetails(
+                presentAlert: true,
+                presentBadge: true,
+                presentSound: true,
+                attachments: [
+                  DarwinNotificationAttachment(
+                    iconResponse.bodyBytes.toString(),
+                  ),
+                ]),
           ),
           payload: jsonEncode(message.toMap()),
         );
@@ -133,15 +144,15 @@ class FirebaseMessageService {
 
         final message = RemoteMessage.fromMap(jsonMap);
 
-        debugPrint('Pressed on push message');
+        debugPrint('Pressed on pushed message');
         debugPrint('Title: ${message.notification?.title}');
         debugPrint('Body: ${message.notification?.body}');
         debugPrint('Data: ${message.data}');
         debugPrint('Payload: ${jsonDecode(notiResponse.payload!)}');
 
-        Map<String, dynamic> dataMap = message.data;
-
-        print(dataMap['link1']);
+        context.read<WebviewBloc>().add(
+              OnLoadWebviewEvent(message.data['link']),
+            );
       },
     );
 

@@ -12,7 +12,20 @@
           "package_name": "com.example.stock_market_project"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "277467892045-h0gjqh4cqsbbmj2ufep2diil8k03eoc6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.stock_market_project",
+            "certificate_hash": "5650be2fa864f698171b7eccb2f8f0742c0eed1b"
+          }
+        },
+        {
+          "client_id": "277467892045-i3v215jhusuh1v5hftgo5fdamdq3uboq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCSpq6W6HY_ns4OTtLfITkLbrfzleSeL6w"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "277467892045-i3v215jhusuh1v5hftgo5fdamdq3uboq.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "277467892045-0o4d2pr6q6o8ffsnng6os04li0mcq8c7.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.stockMarketProject.RunnerTests"
+              }
+            }
+          ]
         }
       }
     }
