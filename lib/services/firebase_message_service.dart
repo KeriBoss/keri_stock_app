@@ -49,85 +49,89 @@ class FirebaseMessageService {
   }
 
   Future initPushFirebaseMessageNotifications() async {
-    // user for IOS, config foreground message options
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
-
-    // event handler when application is opened from terminated state
-    FirebaseMessaging.instance.getInitialMessage().then((message) {
-      debugPrint('Title: ${message?.notification?.title}');
-      debugPrint('Body: ${message?.notification?.body}');
-      debugPrint('Data: ${message?.data}');
-    });
-
-    // event handler when user press on the message
-    FirebaseMessaging.onMessageOpenedApp.listen((message) {
-      debugPrint('Title: ${message.notification?.title}');
-      debugPrint('Body: ${message.notification?.body}');
-      debugPrint('Data: ${message.data}');
-    });
-
-    // application gets a message when it is in the background or terminated
-    FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
-
-    // event handler when application gets a message on foreground
-    FirebaseMessaging.onMessage.listen((message) async {
-      final notification = message.notification;
-
-      // get image from internet, then parse the base64 code the response to the notification for it to show the image
-      Map<String, dynamic> msgMapData = message.data;
-
-      String imgUrl = msgMapData['icon'] as String;
-      String iconUrl = msgMapData['image'] as String;
-
-      final http.Response imgResponse = await http.get(Uri.parse(imgUrl));
-      final http.Response iconResponse = await http.get(Uri.parse(iconUrl));
-
-      BigPictureStyleInformation bigPictureStyleInformation =
-          BigPictureStyleInformation(
-        ByteArrayAndroidBitmap.fromBase64String(
-          base64Encode(
-            imgResponse.bodyBytes,
-          ),
-        ),
-        largeIcon: ByteArrayAndroidBitmap.fromBase64String(
-          base64Encode(
-            iconResponse.bodyBytes,
-          ),
-        ),
+    try {
+      // user for IOS, config foreground message options
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: true,
+        badge: true,
+        sound: true,
       );
 
-      if (notification != null) {
-        localNotification.show(
-          notification.hashCode,
-          notification.title,
-          notification.body,
-          NotificationDetails(
-            android: AndroidNotificationDetails(
-              androidChannel.id,
-              androidChannel.name,
-              channelDescription: androidChannel.description,
-              icon: '@drawable/ic_launcher',
-              styleInformation: bigPictureStyleInformation,
+      // event handler when application is opened from terminated state
+      FirebaseMessaging.instance.getInitialMessage().then((message) {
+        debugPrint('Title: ${message?.notification?.title}');
+        debugPrint('Body: ${message?.notification?.body}');
+        debugPrint('Data: ${message?.data}');
+      });
+
+      // event handler when user press on the message
+      FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        debugPrint('Title: ${message.notification?.title}');
+        debugPrint('Body: ${message.notification?.body}');
+        debugPrint('Data: ${message.data}');
+      });
+
+      // application gets a message when it is in the background or terminated
+      FirebaseMessaging.onBackgroundMessage(handleBackgroundMessage);
+
+      // event handler when application gets a message on foreground
+      FirebaseMessaging.onMessage.listen((message) async {
+        final notification = message.notification;
+
+        // get image from internet, then parse the base64 code the response to the notification for it to show the image
+        Map<String, dynamic> msgMapData = message.data;
+
+        String imgUrl = msgMapData['icon'] as String;
+        String iconUrl = msgMapData['image'] as String;
+
+        final http.Response imgResponse = await http.get(Uri.parse(imgUrl));
+        final http.Response iconResponse = await http.get(Uri.parse(iconUrl));
+
+        BigPictureStyleInformation bigPictureStyleInformation =
+            BigPictureStyleInformation(
+          ByteArrayAndroidBitmap.fromBase64String(
+            base64Encode(
+              imgResponse.bodyBytes,
             ),
-            iOS: DarwinNotificationDetails(
-                presentAlert: true,
-                presentBadge: true,
-                presentSound: true,
-                attachments: [
-                  DarwinNotificationAttachment(
-                    iconResponse.bodyBytes.toString(),
-                  ),
-                ]),
           ),
-          payload: jsonEncode(message.toMap()),
+          largeIcon: ByteArrayAndroidBitmap.fromBase64String(
+            base64Encode(
+              iconResponse.bodyBytes,
+            ),
+          ),
         );
-      }
-    });
+
+        if (notification != null) {
+          localNotification.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                androidChannel.id,
+                androidChannel.name,
+                channelDescription: androidChannel.description,
+                icon: '@drawable/ic_launcher',
+                styleInformation: bigPictureStyleInformation,
+              ),
+              iOS: DarwinNotificationDetails(
+                  presentAlert: true,
+                  presentBadge: true,
+                  presentSound: true,
+                  attachments: [
+                    DarwinNotificationAttachment(
+                      iconResponse.bodyBytes.toString(),
+                    ),
+                  ]),
+            ),
+            payload: jsonEncode(message.toMap()),
+          );
+        }
+      });
+    } catch (e, stackTrace) {
+      debugPrint('Caught error: ${e.toString()} \n${stackTrace.toString()}');
+    }
   }
 
   Future initLocalNotifications() async {
