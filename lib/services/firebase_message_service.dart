@@ -103,6 +103,8 @@ class FirebaseMessageService {
         );
 
         if (notification != null) {
+          // print(message.notification?.body.toString());
+
           localNotification.show(
             notification.hashCode,
             notification.title,
@@ -113,17 +115,18 @@ class FirebaseMessageService {
                 androidChannel.name,
                 channelDescription: androidChannel.description,
                 icon: '@drawable/ic_launcher',
-                styleInformation: bigPictureStyleInformation,
+                // styleInformation: bigPictureStyleInformation,
               ),
               iOS: DarwinNotificationDetails(
-                  presentAlert: true,
-                  presentBadge: true,
-                  presentSound: true,
-                  attachments: [
-                    DarwinNotificationAttachment(
-                      iconResponse.bodyBytes.toString(),
-                    ),
-                  ]),
+                presentAlert: true,
+                presentBadge: true,
+                presentSound: true,
+                attachments: [
+                  DarwinNotificationAttachment(
+                    iconResponse.bodyBytes.toString(),
+                  ),
+                ],
+              ),
             ),
             payload: jsonEncode(message.toMap()),
           );
