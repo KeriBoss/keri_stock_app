@@ -5,13 +5,13 @@ import 'package:flutter_webview_pro/webview_flutter.dart';
 
 import '../../bloc/webview/webview_bloc.dart';
 import '../../main.dart';
-import '../../services/firebase_message_service.dart';
 
 @RoutePage()
 class WebViewScreen extends StatefulWidget {
-  const WebViewScreen({super.key, required this.code});
+  const WebViewScreen({super.key, this.url, this.code});
 
-  final String code;
+  final String? code;
+  final String? url;
 
   @override
   State<StatefulWidget> createState() => _WebViewScreenState();
@@ -27,7 +27,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   void loadWebViewData() async {
     try {
-      link = "$host/$code/$file";
+      link = widget.url ?? "$host/$code/$file";
       final response = await dio.get(link);
 
       if (response.statusCode == 200) {
@@ -44,7 +44,6 @@ class _WebViewScreenState extends State<WebViewScreen> {
 
   @override
   void initState() {
-    FirebaseMessageService(context).initNotifications();
     loadWebViewData();
 
     super.initState();
@@ -67,7 +66,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           onWebViewCreated: (WebViewController webViewController) {
             webviewController = webViewController;
           },
-          initialUrl: "https://keri.vn/",
+          initialUrl: widget.url ?? "https://keri.vn/",
           javascriptMode: JavascriptMode.unrestricted,
           onProgress: (int progress) {
             debugPrint('WebView is loading (progress : $progress%)');

@@ -71,11 +71,13 @@ abstract class _$AppRouter extends RootStackRouter {
       );
     },
     WebViewRoute.name: (routeData) {
-      final args = routeData.argsAs<WebViewRouteArgs>();
+      final args = routeData.argsAs<WebViewRouteArgs>(
+          orElse: () => const WebViewRouteArgs());
       return AutoRoutePage<dynamic>(
         routeData: routeData,
         child: WebViewScreen(
           key: args.key,
+          url: args.url,
           code: args.code,
         ),
       );
@@ -263,12 +265,14 @@ class StockRoute extends PageRouteInfo<void> {
 class WebViewRoute extends PageRouteInfo<WebViewRouteArgs> {
   WebViewRoute({
     Key? key,
-    required String code,
+    String? url,
+    String? code,
     List<PageRouteInfo>? children,
   }) : super(
           WebViewRoute.name,
           args: WebViewRouteArgs(
             key: key,
+            url: url,
             code: code,
           ),
           initialChildren: children,
@@ -283,15 +287,18 @@ class WebViewRoute extends PageRouteInfo<WebViewRouteArgs> {
 class WebViewRouteArgs {
   const WebViewRouteArgs({
     this.key,
-    required this.code,
+    this.url,
+    this.code,
   });
 
   final Key? key;
 
-  final String code;
+  final String? url;
+
+  final String? code;
 
   @override
   String toString() {
-    return 'WebViewRouteArgs{key: $key, code: $code}';
+    return 'WebViewRouteArgs{key: $key, url: $url, code: $code}';
   }
 }

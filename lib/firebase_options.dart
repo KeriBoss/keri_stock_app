@@ -67,6 +67,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '277467892045',
     projectId: 'keri-stock',
     storageBucket: 'keri-stock.appspot.com',
+    androidClientId: '277467892045-h0gjqh4cqsbbmj2ufep2diil8k03eoc6.apps.googleusercontent.com',
+    iosClientId: '277467892045-blsur8i0taqj133iivcp1nqqrr5effhs.apps.googleusercontent.com',
     iosBundleId: 'com.example.stockMarketProject',
   );
 
@@ -76,6 +78,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '277467892045',
     projectId: 'keri-stock',
     storageBucket: 'keri-stock.appspot.com',
+    androidClientId: '277467892045-h0gjqh4cqsbbmj2ufep2diil8k03eoc6.apps.googleusercontent.com',
+    iosClientId: '277467892045-0o4d2pr6q6o8ffsnng6os04li0mcq8c7.apps.googleusercontent.com',
     iosBundleId: 'com.example.stockMarketProject.RunnerTests',
   );
 }

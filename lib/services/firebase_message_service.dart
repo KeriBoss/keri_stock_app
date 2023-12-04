@@ -1,13 +1,17 @@
 import 'dart:convert';
+import 'dart:io';
 
+import 'package:auto_route/auto_route.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:http/http.dart' as http;
-import 'package:stock_market_project/bloc/webview/webview_bloc.dart';
+import 'package:stock_market_project/core/router/app_router_config.dart';
 
+import '../bloc/webview/webview_bloc.dart';
 import '../data/static/enum/local_storage_enum.dart';
 import '../main.dart';
 import 'local_storage_service.dart';
@@ -42,34 +46,58 @@ class FirebaseMessageService {
     // subscribe to a topic to get messages from that topic
     firebaseMessaging.subscribeToTopic('all');
 
-    initPushFirebaseMessageNotifications();
+    initFirebaseMessagePushNotifications();
     initLocalNotifications();
 
     debugPrint('Finish notification initiation');
   }
 
-  Future initPushFirebaseMessageNotifications() async {
+  Future initFirebaseMessagePushNotifications() async {
     try {
-      // user for IOS, config foreground message options
-      await FirebaseMessaging.instance
-          .setForegroundNotificationPresentationOptions(
+      // use for IOS, config foreground message options
+      await firebaseMessaging.setForegroundNotificationPresentationOptions(
         alert: true,
         badge: true,
         sound: true,
       );
 
       // event handler when application is opened from terminated state
-      FirebaseMessaging.instance.getInitialMessage().then((message) {
-        debugPrint('Title: ${message?.notification?.title}');
-        debugPrint('Body: ${message?.notification?.body}');
-        debugPrint('Data: ${message?.data}');
+      firebaseMessaging.getInitialMessage().then((message) {
+        if (message != null) {
+          FlutterAppBadger.removeBadge();
+          debugPrint(
+            'Pressed push fcm notification to open application from terminated state',
+          );
+          debugPrint('Title: ${message.notification?.title}');
+          debugPrint('Body: ${message.notification?.body}');
+          debugPrint('Data: ${message.data}');
+
+          context
+              .read<WebviewBloc>()
+              .add(OnLoadWebviewEvent(message.data['link1'].toString()));
+
+          context.router.replaceAll([
+            WebViewRoute(url: message.data['link1'].toString()),
+          ]);
+        }
       });
 
       // event handler when user press on the message
       FirebaseMessaging.onMessageOpenedApp.listen((message) {
+        FlutterAppBadger.removeBadge();
+
+        debugPrint('Pressed push fcm notification');
         debugPrint('Title: ${message.notification?.title}');
         debugPrint('Body: ${message.notification?.body}');
         debugPrint('Data: ${message.data}');
+
+        context
+            .read<WebviewBloc>()
+            .add(OnLoadWebviewEvent(message.data['link1'].toString()));
+
+        context.router.replaceAll([
+          WebViewRoute(url: message.data['link1'].toString()),
+        ]);
       });
 
       // application gets a message when it is in the background or terminated
@@ -77,56 +105,98 @@ class FirebaseMessageService {
 
       // event handler when application gets a message on foreground
       FirebaseMessaging.onMessage.listen((message) async {
+        debugPrint('Received a fcm notification');
+        debugPrint('Title: ${message.notification?.title}');
+        debugPrint('Body: ${message.notification?.body}');
+        debugPrint('Data: ${message.data}');
+
+        FlutterAppBadger.updateBadgeCount(1);
+
         final notification = message.notification;
 
         // get image from internet, then parse the base64 code the response to the notification for it to show the image
         Map<String, dynamic> msgMapData = message.data;
 
-        String imgUrl = msgMapData['icon'] as String;
-        String iconUrl = msgMapData['image'] as String;
+        String? imgUrl = msgMapData['image'] as String?;
+        String? iconUrl = msgMapData['icon'] as String?;
 
-        final http.Response imgResponse = await http.get(Uri.parse(imgUrl));
-        final http.Response iconResponse = await http.get(Uri.parse(iconUrl));
+        AndroidNotificationDetails? androidNotificationDetails;
+        DarwinNotificationDetails? darwinNotificationDetails;
 
-        BigPictureStyleInformation bigPictureStyleInformation =
-            BigPictureStyleInformation(
-          ByteArrayAndroidBitmap.fromBase64String(
-            base64Encode(
-              imgResponse.bodyBytes,
-            ),
-          ),
-          largeIcon: ByteArrayAndroidBitmap.fromBase64String(
-            base64Encode(
-              iconResponse.bodyBytes,
-            ),
-          ),
-        );
+        if (Platform.isIOS) {
+          final String? bigImgFilePath =
+              await LocalStorageService.downloadAndSavePicture(
+            url: imgUrl,
+          );
+
+          final String? iconFilePath =
+              await LocalStorageService.downloadAndSavePicture(
+            url: iconUrl,
+          );
+
+          darwinNotificationDetails = DarwinNotificationDetails(
+            presentAlert: true,
+            presentBadge: true,
+            presentSound: true,
+            presentBanner: true,
+            attachments: [
+              if (bigImgFilePath != null) ...[
+                DarwinNotificationAttachment(
+                  bigImgFilePath,
+                ),
+              ],
+            ],
+          );
+        } else if (Platform.isAndroid) {
+          BigPictureStyleInformation? bigPictureStyleInformation;
+
+          // big image can not be null, icon can be null
+          if (imgUrl != null && imgUrl.isNotEmpty) {
+            final http.Response imgResponse = await http.get(Uri.parse(imgUrl));
+            http.Response? iconResponse = iconUrl != null && iconUrl.isNotEmpty
+                ? await http.get(Uri.parse(iconUrl))
+                : null;
+
+            bigPictureStyleInformation = iconResponse != null
+                ? BigPictureStyleInformation(
+                    ByteArrayAndroidBitmap.fromBase64String(
+                      base64Encode(
+                        imgResponse.bodyBytes,
+                      ),
+                    ),
+                    largeIcon: ByteArrayAndroidBitmap.fromBase64String(
+                      base64Encode(
+                        iconResponse.bodyBytes,
+                      ),
+                    ),
+                  )
+                : BigPictureStyleInformation(
+                    ByteArrayAndroidBitmap.fromBase64String(
+                      base64Encode(
+                        imgResponse.bodyBytes,
+                      ),
+                    ),
+                  );
+          }
+
+          androidNotificationDetails = AndroidNotificationDetails(
+            androidChannel.id,
+            androidChannel.name,
+            playSound: true,
+            channelDescription: androidChannel.description,
+            icon: '@drawable/ic_launcher',
+            styleInformation: bigPictureStyleInformation,
+          );
+        }
 
         if (notification != null) {
-          // print(message.notification?.body.toString());
-
           localNotification.show(
             notification.hashCode,
             notification.title,
             notification.body,
             NotificationDetails(
-              android: AndroidNotificationDetails(
-                androidChannel.id,
-                androidChannel.name,
-                channelDescription: androidChannel.description,
-                icon: '@drawable/ic_launcher',
-                // styleInformation: bigPictureStyleInformation,
-              ),
-              iOS: DarwinNotificationDetails(
-                presentAlert: true,
-                presentBadge: true,
-                presentSound: true,
-                attachments: [
-                  DarwinNotificationAttachment(
-                    iconResponse.bodyBytes.toString(),
-                  ),
-                ],
-              ),
+              android: androidNotificationDetails,
+              iOS: darwinNotificationDetails,
             ),
             payload: jsonEncode(message.toMap()),
           );
@@ -157,9 +227,13 @@ class FirebaseMessageService {
         debugPrint('Data: ${message.data}');
         debugPrint('Payload: ${jsonDecode(notiResponse.payload!)}');
 
-        context.read<WebviewBloc>().add(
-              OnLoadWebviewEvent(message.data['link']),
-            );
+        context
+            .read<WebviewBloc>()
+            .add(OnLoadWebviewEvent(message.data['link1'].toString()));
+
+        context.router.replaceAll([
+          WebViewRoute(url: message.data['link1'].toString()),
+        ]);
       },
     );
 
