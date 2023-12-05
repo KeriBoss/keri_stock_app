@@ -5,7 +5,7 @@ import 'package:stock_market_project/core/failure/failure.dart';
 import 'package:stock_market_project/main.dart';
 
 class NetworkService {
-  static const String domain = 'http://34.67.65.197:8080/api_chungkhoan/api';
+  static const String domain = 'http://34.67.65.197:8080/chungkhoan/api';
 
   static Map<String, String> headers = {'Content-Type': 'application/json'};
 

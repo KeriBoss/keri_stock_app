@@ -43,8 +43,7 @@ final dumpMessageMap = {
   "notification": {
     "title": "Title of Notification",
     "body": "Body of Notification",
-    "click_action":
-        "FLUTTER_NOTIFICATION_CLICK" // Optional: Specify the action when the user taps on the notification
+    "click_action": "FLUTTER_NOTIFICATION_CLICK",
   },
   "data": {
     "link1": "/index.php?option=com_user&dsjlfkjsdflk=10",

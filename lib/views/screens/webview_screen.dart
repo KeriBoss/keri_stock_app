@@ -20,21 +20,22 @@ class WebViewScreen extends StatefulWidget {
 class _WebViewScreenState extends State<WebViewScreen> {
   late WebViewController webviewController;
   String host = "https://keri.vn";
-  String code = "";
   String file = "link.txt";
-  String link = "";
+  String? link;
   int count = 0;
 
   void loadWebViewData() async {
     try {
-      link = widget.url ?? "$host/$code/$file";
-      final response = await dio.get(link);
+      link = widget.url ?? "$host/${widget.code}/$file";
+      final response = await dio.get(link!);
 
       if (response.statusCode == 200) {
         setState(() {
-          link = response.data as String;
-          webviewController.loadUrl(link);
-          debugPrint("url: $link");
+          link = response.data.toString();
+
+          print('@@@ ' + link!);
+
+          context.read<WebviewBloc>().add(OnLoadWebviewEvent(link!));
         });
       }
     } catch (e) {
@@ -57,7 +58,7 @@ class _WebViewScreenState extends State<WebViewScreen> {
           if (state is WebviewLoadedState) {
             setState(() {
               link = state.url;
-              webviewController.loadUrl(link);
+              webviewController.loadUrl(link!);
               debugPrint("url: $link");
             });
           }
@@ -65,8 +66,10 @@ class _WebViewScreenState extends State<WebViewScreen> {
         child: WebView(
           onWebViewCreated: (WebViewController webViewController) {
             webviewController = webViewController;
+            webviewController.loadUrl(link!);
+            debugPrint("url: $link");
           },
-          initialUrl: widget.url ?? "https://keri.vn/",
+          initialUrl: widget.url ?? link ?? "https://keri.vn/",
           javascriptMode: JavascriptMode.unrestricted,
           onProgress: (int progress) {
             debugPrint('WebView is loading (progress : $progress%)');

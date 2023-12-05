@@ -7,6 +7,7 @@ import 'package:stock_market_project/data/static/enum/local_storage_enum.dart';
 import 'package:stock_market_project/services/local_storage_service.dart';
 import 'package:stock_market_project/views/screens/register_screen.dart';
 import 'package:stock_market_project/views/screens/webview_screen.dart';
+import 'package:stock_market_project/views/widgets/gradient_button.dart';
 
 import '../../bloc/webview/webview_bloc.dart';
 import '../../core/router/app_router_config.dart';
@@ -30,7 +31,7 @@ class _InputAppIdScreenState extends State<InputAppIdScreen> {
     );
   }
 
-  Future<void> setupInteractedMessage() async {
+  Future<void> _setupInteractedMessage() async {
     // Get any messages which caused the application to open from
     // a terminated state.
     RemoteMessage? initialMessage =
@@ -66,9 +67,7 @@ class _InputAppIdScreenState extends State<InputAppIdScreen> {
       if (currentCode != null && currentCode.isNotEmpty) {
         context.router.pushWidget(
           WebViewScreen(
-            code: codeController.text.isNotEmpty
-                ? codeController.text
-                : currentCode,
+            code: currentCode,
           ),
         );
       }
@@ -76,7 +75,7 @@ class _InputAppIdScreenState extends State<InputAppIdScreen> {
 
     super.initState();
 
-    setupInteractedMessage();
+    _setupInteractedMessage();
   }
 
   @override
@@ -117,19 +116,16 @@ class _InputAppIdScreenState extends State<InputAppIdScreen> {
                     },
                     child: const Text('Tra Cứu'),
                   ),
-                  TextButton(
-                    onPressed: () => context.router.pushWidget(
+                  GradientElevatedButton(
+                    text: 'Đăng ký tài khoản',
+                    onPress: () => context.router.pushWidget(
                       const RegisterScreen(
                         isShipper: false,
                       ),
                     ),
-                    child: const Text(
-                      'Đăng ký dành cho Khách hàng',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
+                    buttonMargin: EdgeInsets.only(top: 20.height),
+                    buttonHeight: 40.height,
+                    buttonWidth: MediaQuery.of(context).size.width / 2,
                   ),
                 ],
               )),

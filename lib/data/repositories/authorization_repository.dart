@@ -23,7 +23,7 @@ class AuthorizationRepository {
 
       final response = await NetworkService.get(
         queryParam: {
-          'tablename': DatabaseTableEnum.tbl_users.name,
+          'tablename': DatabaseTableEnum.tbl_yume_nhanvien.name,
           'fieldname': 'phonenumber',
           'fieldvalue': phoneNumber,
           'fieldname': 'password',
@@ -73,7 +73,7 @@ class AuthorizationRepository {
 
     try {
       Map<String, dynamic> requestParam = {
-        'tablename': DatabaseTableEnum.tbl_users.name,
+        'tablename': DatabaseTableEnum.tbl_yume_nhanvien.name,
         DatabaseActionEnum.submitnew.name: DatabaseActionEnum.submitnew.name,
       }..addAll(newUser.toJson());
 

@@ -1,5 +1,5 @@
 enum DatabaseTableEnum {
-  tbl_users,
+  tbl_yume_nhanvien,
 }
 
 enum DatabaseActionEnum {
