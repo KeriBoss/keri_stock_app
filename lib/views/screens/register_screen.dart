@@ -128,10 +128,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: _passwordTextEditingController.text,
         phoneNumber: _phoneNumberTextEditingController.text,
         phoneFcmToken: fcmToken,
-        userRole: widget.isShipper ? 'shipper' : 'client',
         address: _addressTextEditingController.text,
         idCertificateNumber: _idCertNumTextEditingController.text,
-        sex: _sexDropdownController.dropDownValue?.value,
       );
 
       context.router.pushWidget(
@@ -211,7 +209,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   controller: _fullNameTextEditingController,
                   hintText: 'Họ và Tên',
                 ),
-                _dropdownTextField(),
+                // _dropdownTextField(),
                 _customTextField(
                   controller: _addressTextEditingController,
                   hintText: 'Địa chỉ',

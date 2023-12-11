@@ -27,7 +27,7 @@ class AuthorizationRepository {
           'fieldname': 'phonenumber',
           'fieldvalue': phoneNumber,
           'fieldname': 'password',
-          'password': password,
+          'fieldvalue': password,
         },
         url: '/list/',
       );
